@@ -1,52 +1,42 @@
 package com.example.jokeservice;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JokeRepository {
 
-    private List<String> jokes;
+    private Map<Integer, List<String>> indexedJokes = new HashMap<>();
+    private int index = 1;
 
     public JokeRepository() {
-        jokes = new ArrayList<>();
-
-        jokes.add("What do you call a pony with a cough?\n" +
-                "\n" +
-                "A little horse.");
-        jokes.add("What did one hat say to the other?\n" +
-                "\n" +
-                "You wait here. I’ll go on a head.");
-        jokes.add("What do you call a magic dog?\n" +
-                "\n" +
-                "A labracadabrador.");
-        jokes.add("What did the shark say when he ate the clownfish?\n" +
-                "\n" +
-                "This tastes a little funny.");
-        jokes.add("What’s orange and sounds like a carrot?\n" +
-                "\n" +
-                "A parrot.");
-        jokes.add("Why can’t you hear a pterodactyl go to the bathroom?\n" +
-                "\n" +
-                "Because the “P” is silent.");
-        jokes.add("What do you call a woman with one leg?\n" +
-                "\n" +
-                "Eileen.");
-        jokes.add("What did the pirate say when he turned 80?\n" +
-                "\n" +
-                "Aye matey.");
-        jokes.add("Why did the frog take the bus to work today?\n" +
-                "\n" +
-                "His car got toad away.");
-        jokes.add("What did the buffalo say when his son left for college?\n" +
-                "\n" +
-                "Bison.");
+        jokeMapper("What do you call a pony with a cough?", "A little horse.");
+        jokeMapper("What did one hat say to the other?", "You wait here. I’ll go on a head.");
+        jokeMapper("What do you call a magic dog?", "A labracadabrador.");
+        jokeMapper("What did the shark say when he ate the clownfish?", "This tastes a little funny.");
+        jokeMapper("What’s orange and sounds like a carrot?", "A parrot.");
+        jokeMapper("Why can’t you hear a pterodactyl go to the bathroom?", "Because the “P” is silent.");
+        jokeMapper("What do you call a woman with one leg?", "Eileen.");
+        jokeMapper("What did the pirate say when he turned 80?", "Aye matey.");
+        jokeMapper("Why did the frog take the bus to work today?", "His car got toad away.");
+        jokeMapper("What did the buffalo say when his son left for college?", "Bison.");
     }
 
-    public List<String> getJokes() {
-        return jokes;
+    private void jokeMapper (String premise, String punchline) {
+        List<String> newList = new ArrayList<>();
+        newList.add(premise);
+        newList.add(punchline);
+
+        indexedJokes.put(index, newList);
+
+        index += 1;
     }
 
-    public void setJokes(List<String> jokes) {
-        this.jokes = jokes;
+    public Map<Integer, List<String>> getIndexedJokes() {
+        return indexedJokes;
+    }
+
+    public void setIndexedJokes(Map<Integer, List<String>> indexedJokes) {
+        this.indexedJokes = indexedJokes;
     }
 }
