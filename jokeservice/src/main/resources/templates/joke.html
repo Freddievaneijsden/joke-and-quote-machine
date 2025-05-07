@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Joke of the Day</title>
+</head>
+<body>
+<h1>Joke Time!</h1>
+<p th:text="${premise}"></p>
+<p th:text="${punchline}"></p>
+
+<form action="/" method="get">
+    <button type="submit">Back</button>
+</form>
+
+</body>
+</html>

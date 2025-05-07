@@ -6,13 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class JokeserviceApplication {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         SpringApplication.run(JokeserviceApplication.class, args);
-
-        JokeService jokeService = new JokeService();
-        JokeRepository jokeRepository = new JokeRepository();
-
-        jokeService.printRandomJoke(jokeRepository.getIndexedJokes());
     }
 
 }
