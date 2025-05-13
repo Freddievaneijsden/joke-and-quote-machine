@@ -25,6 +25,7 @@ public class ResourceserverApplication {
 						.anyRequest().authenticated()
 				)
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+		//Viktig rad ovan - slår på att detta är en resourceServer som ska kunna ta emot tokens.
 		return http.build();
 	}
 
