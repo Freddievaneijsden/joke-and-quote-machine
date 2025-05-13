@@ -32,6 +32,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
@@ -41,10 +42,10 @@ import java.util.UUID;
 @SpringBootApplication
 public class AuthserviceApplication {
 
-    //Todo: Add user registration 2
-    //TOdo: Add client registration 3
-    //Todo: Dont create new keypair each start 4
-    //Todo: How can we handle user consent and store that in our database for future use? 1
+    //Todo: Add user registration 2, instead of hardcoded Inmemory user
+    //TOdo: Add client registration 3, instead of hardcoded client-id and secret
+    //Todo: Dont create new keypair each start 4, store in database and reuse
+    //Todo: How can we handle user consent and store that in our database for future use? 1 (Consent required - fånga upp endpoint /authorize)
 
     public static void main(String[] args) {
         SpringApplication.run(AuthserviceApplication.class, args);
@@ -72,7 +73,7 @@ public class AuthserviceApplication {
     @Order(2)
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize ->
-                authorize.anyRequest().authenticated())
+                        authorize.anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults());
         return http.build();
     }
@@ -83,21 +84,21 @@ public class AuthserviceApplication {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
             throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
-                OAuth2AuthorizationServerConfigurer.authorizationServer();
+                OAuth2AuthorizationServerConfigurer.authorizationServer(); //Hämta server
 
-        //Genererar dessa endpoints automatiskt för information om signeringsnycklar
-        // /oauth2/token, /oauth2/authorize, /oauth2/jwks
+        //Genererar dessa endpoints automatiskt
+        // /oauth2/token - utfärda token, /oauth2/authorize - utfärda code som byts till token, /oauth2/jwks - information om signeringsnycklar
         http
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .with(authorizationServerConfigurer, (authorizationServer) ->
                         authorizationServer
-                                .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
+                                .oidc(Customizer.withDefaults())    // Enable OpenID Connect 1.0 (Social login)
                 )
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .anyRequest().authenticated()
                 )
-                        // Redirect to the login page when not authenticated from the
+                // Redirect to the login page when not authenticated from the
                 // authorization endpoint
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
@@ -109,7 +110,7 @@ public class AuthserviceApplication {
         return http.build();
     }
 
-    //Ska inte commit och pushas, interfacet borde implementeras och hämta uppgifter från databas
+    //Registrera client id och secret
     @Bean
     public RegisteredClientRepository registeredClientRepository(PasswordEncoder encoder) {
         RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
@@ -118,7 +119,7 @@ public class AuthserviceApplication {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS) //möjliggör login med "client-id" och "secret" t.ex när annan backend server behöver access
                 .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
                 .postLogoutRedirectUri("http://127.0.0.1:8080/")
                 .scope(OidcScopes.OPENID)
@@ -126,7 +127,8 @@ public class AuthserviceApplication {
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
 
-        return new InMemoryRegisteredClientRepository(oidcClient);
+        return new InMemoryRegisteredClientRepository(oidcClient);  //Ska egentligen inte commit och pushas,
+        // interfacet borde implementeras och hämta uppgifter från databas istället
     }
 
     @Bean
@@ -142,14 +144,15 @@ public class AuthserviceApplication {
         return new ImmutableJWKSet<>(jwkSet);
     }
 
+
+    //Signeringsnyckel
     private static KeyPair generateRsaKey() {
         KeyPair keyPair;
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
             keyPair = keyPairGenerator.generateKeyPair();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
         return keyPair;
