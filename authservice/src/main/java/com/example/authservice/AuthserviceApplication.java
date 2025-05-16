@@ -32,6 +32,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -67,13 +70,28 @@ public class AuthserviceApplication {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    //Config for JavaScript on http://localhost:8888 (SPA) to make HTTP requests to this service (Cross-Origin Resource Sharing).
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.addAllowedOrigin("http://localhost:8888"); //SPA
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", config); // Apply to all paths on auth server
+        return source;
+    }
+
 
     //Hur vi identifierar oss
     @Bean
     @Order(2)
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         http.authorizeHttpRequests(authorize ->
                         authorize.anyRequest().authenticated())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .rememberMe(Customizer.withDefaults()) //Keeps the user logged in, default 2 week
                 .formLogin(Customizer.withDefaults());
         return http.build();
     }
@@ -110,10 +128,25 @@ public class AuthserviceApplication {
         return http.build();
     }
 
-    //Registrera client id och secret
+    //Registering the clients with the AuthorizationService so it knows which applications are allowed to request tokens.
     @Bean
     public RegisteredClientRepository registeredClientRepository(PasswordEncoder encoder) {
-        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+        RegisteredClient spaClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("spa-client-id") // Matches CLIENT_ID in app.js
+                // .clientSecret(encoder.encode("spa-secret")) // Remove secret for public client
+                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE) // Remove authentication for public client
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                //.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN) // REMOVE for public client
+                .redirectUri("http://localhost:8888/callback.html") // Matches REDIRECT_URI in app.js
+                .scope(OidcScopes.OPENID)
+                .scope("read_resource")
+                .clientSettings(ClientSettings.builder()
+                        .requireProofKey(true) // PKCE is required and enforced
+                        .requireAuthorizationConsent(false)
+                        .build())
+                .build();
+
+        RegisteredClient client = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("client-id")
                 .clientSecret(encoder.encode("secret"))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
@@ -127,7 +160,7 @@ public class AuthserviceApplication {
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
 
-        return new InMemoryRegisteredClientRepository(oidcClient);  //Ska egentligen inte commit och pushas,
+        return new InMemoryRegisteredClientRepository(client, spaClient);  //Ska egentligen inte commit och pushas,
         // interfacet borde implementeras och hämta uppgifter från databas istället
     }
 
