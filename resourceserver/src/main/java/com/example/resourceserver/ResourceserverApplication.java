@@ -23,7 +23,7 @@ public class ResourceserverApplication {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
 		http
-				.sessionManagement(AbstractHttpConfigurer::disable)
+				.sessionManagement(AbstractHttpConfigurer::disable) //Does not need it´s own session, new state every time
 				.cors(cors -> cors.configurationSource(corsConfigurationSource)) // Apply CORS configuration
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers("/secure").hasAuthority("SCOPE_read_resource") // Or just .authenticated()
