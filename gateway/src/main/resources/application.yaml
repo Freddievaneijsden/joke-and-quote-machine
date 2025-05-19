@@ -7,6 +7,8 @@ spring:
       mvc:
         routes:
         - id: jokes
-          uri: http://localhost:8080
+          uri: http://localhost:8080/
           predicates:
-            - Path=/api/get
+            - Path=/api/**
+          filters:
+                - RewritePath=/api/?(?<segment>.*), /$\{segment}
