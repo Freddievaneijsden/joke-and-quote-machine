@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: gateway
+
+  cloud:
+    gateway:
+      mvc:
+        routes:
+        - id: jokes
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/get
