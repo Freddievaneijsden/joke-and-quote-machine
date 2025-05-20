@@ -5,3 +5,4 @@ services:
       - "8080:8081"
   resourceServer:
     image: resourceserver:0.0.1-SNAPSHOT
+#Does not build images
