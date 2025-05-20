@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.List;
+
 @RestController
 public class ResourceController {
 
@@ -21,8 +24,12 @@ public class ResourceController {
     public String publicEndpoint(HttpServletRequest request) {
         String clientIp = request.getRemoteAddr();
         int clientPort = request.getRemotePort();
+        List<String> headerNames = Collections.list(request.getHeaderNames());
 
         logger.info("Client IP: {} - Port: {}", clientIp, clientPort);
+        logger.info("Headers: {}", headerNames);
+        logger.info("X-forwarded-For: {}", request.getRemoteHost());
+        logger.info("X-forwarded-Port: {}", request.getRemotePort());
 
         return "Hello from the PUBLIC Resource Server!";
     }
