@@ -7,7 +7,7 @@ spring:
       mvc:
         routes:
         - id: jokes
-          uri: http://localhost:8080/
+          uri: http://resourceserver:8080/
           predicates:
             - Path=/api/**
           filters:
