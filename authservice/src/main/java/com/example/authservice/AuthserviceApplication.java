@@ -99,7 +99,7 @@ public class AuthserviceApplication {
     //Utfärda tokens
     @Bean
     @Order(1)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource)
             throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 OAuth2AuthorizationServerConfigurer.authorizationServer(); //Hämta server
@@ -108,6 +108,7 @@ public class AuthserviceApplication {
         // /oauth2/token - utfärda token, /oauth2/authorize - utfärda code som byts till token, /oauth2/jwks - information om signeringsnycklar
         http
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .with(authorizationServerConfigurer, (authorizationServer) ->
                         authorizationServer
                                 .oidc(Customizer.withDefaults())    // Enable OpenID Connect 1.0 (Social login)

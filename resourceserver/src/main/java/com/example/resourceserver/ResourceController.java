@@ -3,6 +3,7 @@ package com.example.resourceserver;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +15,7 @@ public class ResourceController {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
 
-//    @CrossOrigin(origins = "http://localhost:8888") Fast way of allowing CORS instead of own config
+//    @CrossOrigin(origins = "http://localhost:8888") // Fast way of allowing CORS instead of own config
     @GetMapping("/secure")
     public String secureEndpoint() {
         return "Hello from the SECURE Resource Server! Token is valid.";

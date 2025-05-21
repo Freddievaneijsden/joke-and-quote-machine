@@ -5,4 +5,8 @@ services:
       - "8080:8081"
   resourceServer:
     image: resourceserver:0.0.1-SNAPSHOT
+  auth:
+    image: authservice:0.0.1-SNAPSHOT
+    ports:
+      - "9000:9000"
 #Does not build images

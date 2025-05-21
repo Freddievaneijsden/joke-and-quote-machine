@@ -157,7 +157,7 @@ async function callApi() {
     }
 
     try {
-        const response = await fetch(`${RESOURCE_SERVER_URL}/secure`, {
+        const response = await fetch(`${RESOURCE_SERVER_URL}/api/secure`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
