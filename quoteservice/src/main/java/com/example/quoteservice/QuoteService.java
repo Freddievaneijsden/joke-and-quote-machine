@@ -1,8 +1,10 @@
 package com.example.quoteservice;
 
-import java.util.Map;
+import org.springframework.stereotype.Service;
+
 import java.util.Random;
 
+@Service
 public class QuoteService implements QuoteGenerator{
 
     Random random = new Random();
