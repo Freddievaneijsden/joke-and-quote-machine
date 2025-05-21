@@ -1,6 +1,6 @@
 
 const AUTH_SERVER_URL = 'http://localhost:9000';
-const RESOURCE_SERVER_URL = 'http://localhost:8080'; // Your resource server
+const RESOURCE_SERVER_URL = 'http://localhost:8081'; // Your resource server
 const CLIENT_ID = 'spa-client-id'; // Must match the client ID in Spring Boot
 const REDIRECT_URI = 'http://localhost:8888/callback.html'; // SPA's callback
 const SCOPES = 'openid read_resource'; // Request 'openid' for ID token, 'read_resource' for your API
@@ -157,7 +157,7 @@ async function callApi() {
     }
 
     try {
-        const response = await fetch(`${RESOURCE_SERVER_URL}/api/secure`, {
+        const response = await fetch(`${RESOURCE_SERVER_URL}/api/index`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -175,8 +175,12 @@ async function callApi() {
             throw new Error(`API call failed: ${response.status} ${response.statusText}`);
         }
 
-        const data = await response.text(); // Or response.json() if it returns JSON
-        apiResponseEl.textContent = data;
+        // const data = await response.text(); // Or response.json() if it returns JSON
+        // apiResponseEl.textContent = data;
+        // statusEl.textContent = 'API call successful.';
+
+        const data = await response.json(); // Now expecting a JSON object with premise & punchline
+        apiResponseEl.innerHTML = `<strong>${data.premise}</strong><br>${data.punchline}`;
         statusEl.textContent = 'API call successful.';
 
     } catch (error) {
