@@ -26,7 +26,7 @@ public class JokeController {
 //        return "joke";
 //    }
 
-    @GetMapping("/index")
+    @GetMapping("/jokes")
     public ResponseEntity<Map<String, String>> tellAJoke(Authentication authentication) {
         System.out.println("User authenticated as: " + authentication.getName());
         List<String> joke = jokeService.getRandomJoke();

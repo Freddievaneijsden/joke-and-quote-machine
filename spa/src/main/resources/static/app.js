@@ -157,7 +157,7 @@ async function callApi() {
     }
 
     try {
-        const response = await fetch(`${RESOURCE_SERVER_URL}/api/index`, {
+        const response = await fetch(`${RESOURCE_SERVER_URL}/api/jokes`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`

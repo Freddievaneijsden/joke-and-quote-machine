@@ -26,7 +26,7 @@ public class JokeserviceApplication {
 				.sessionManagement(AbstractHttpConfigurer::disable) //Does not need it´s own session, new state every time
 				.cors(cors -> cors.configurationSource(corsConfigurationSource)) // Apply CORS configuration
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers("/index").hasAuthority("SCOPE_read_resource") // Or just .authenticated()
+						.requestMatchers("/jokes").hasAuthority("SCOPE_read_resource") // Or just .authenticated()
 						.requestMatchers("/public").permitAll()
 						.anyRequest().authenticated()
 				)
