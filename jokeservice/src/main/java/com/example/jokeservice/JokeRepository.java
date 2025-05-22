@@ -7,7 +7,7 @@ import java.util.Map;
 public class JokeRepository {
 
     private Map<Integer, List<String>> indexedJokes = new HashMap<>();
-    private int index = 1;
+    private int index = 0;
 
     public JokeRepository() {
         jokeMapper("What do you call a pony with a cough?", "A little horse.");
@@ -29,7 +29,7 @@ public class JokeRepository {
 
         indexedJokes.put(index, newList);
 
-        index += 1;
+        index ++;
     }
 
     public Map<Integer, List<String>> getIndexedJokes() {
