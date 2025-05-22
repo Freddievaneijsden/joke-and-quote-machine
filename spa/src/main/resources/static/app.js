@@ -30,20 +30,26 @@ function base64UrlEncode(arrayBuffer) {
 
 // --- DOM Elements (for index.html) ---
 const loginButton = document.getElementById('loginButton');
-const callApiButton = document.getElementById('callApiButton');
+// const callApiButton = document.getElementById('callApiButton');
 const logoutButton = document.getElementById('logoutButton');
 const statusEl = document.getElementById('status');
 const accessTokenEl = document.getElementById('accessToken');
 const apiResponseEl = document.getElementById('apiResponse');
+const quoteButton = document.getElementById('callQuote');
+const jokeButton = document.getElementById('callJoke');
 
 // --- Main Logic ---
 
 if (loginButton) { // Only run this part on index.html
     loginButton.addEventListener('click', redirectToLogin);
 }
-if (callApiButton) {
-    callApiButton.addEventListener('click', callApi);
-}
+// if (callApiButton) {
+//     callApiButton.addEventListener('click', () => callApi('quotes'));
+// }
+if (quoteButton)
+    quoteButton.addEventListener('click', () => callApi('quotes'));
+if (jokeButton)
+    jokeButton.addEventListener('click', () => callApi('jokes'));
 if (logoutButton) {
     logoutButton.addEventListener('click', logout);
 }
@@ -148,7 +154,7 @@ async function handleCallback() {
     }
 }
 
-async function callApi() {
+async function callApi(type) {
     const accessToken = localStorage.getItem('access_token');
     if (!accessToken) {
         statusEl.textContent = 'Not logged in. Please login first.';
@@ -156,8 +162,10 @@ async function callApi() {
         return;
     }
 
+    const endpointPath = type === 'jokes' ? 'jokes/random' : 'quotes/random';
+
     try {
-        const response = await fetch(`${RESOURCE_SERVER_URL}/api/jokes`, {
+        const response = await fetch(`${RESOURCE_SERVER_URL}/api/${endpointPath}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -179,8 +187,14 @@ async function callApi() {
         // apiResponseEl.textContent = data;
         // statusEl.textContent = 'API call successful.';
 
-        const data = await response.json(); // Now expecting a JSON object with premise & punchline
-        apiResponseEl.innerHTML = `<strong>${data.premise}</strong><br>${data.punchline}`;
+        const data = await response.json();
+        if (data.type === 'quote') {
+            apiResponseEl.innerHTML = `<em>${data.text}</em>`;
+        } else if (data.type === 'joke') {
+            apiResponseEl.innerHTML = `<strong>${data.premise}</strong><br>${data.punchline}`;
+        } else {
+            apiResponseEl.innerHTML = 'Unknown response type.';
+        }
         statusEl.textContent = 'API call successful.';
 
     } catch (error) {
@@ -218,8 +232,10 @@ function updateUI() {
         statusEl.textContent = 'Logged in.';
         accessTokenEl.textContent = accessToken;
         loginButton.style.display = 'none';
-        callApiButton.style.display = 'inline-block';
+        // callApiButton.style.display = 'inline-block';
         logoutButton.style.display = 'inline-block';
+        quoteButton.style.display = 'inline-block';
+        jokeButton.style.display = 'inline-block';
 
         // Optionally decode and display ID token claims
         const idToken = localStorage.getItem('id_token');
@@ -238,8 +254,10 @@ function updateUI() {
         accessTokenEl.textContent = 'N/A';
         apiResponseEl.textContent = 'N/A';
         loginButton.style.display = 'inline-block';
-        callApiButton.style.display = 'none';
+        // callApiButton.style.display = 'none';
         logoutButton.style.display = 'none';
+        quoteButton.style.display = 'none';
+        jokeButton.style.display = 'none';
     }
 }
 

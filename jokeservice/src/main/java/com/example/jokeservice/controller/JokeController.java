@@ -26,11 +26,14 @@ public class JokeController {
 //        return "joke";
 //    }
 
-    @GetMapping("/jokes")
+    @GetMapping("/random")
     public ResponseEntity<Map<String, String>> tellAJoke(Authentication authentication) {
-        System.out.println("User authenticated as: " + authentication.getName());
         List<String> joke = jokeService.getRandomJoke();
-        Map<String, String> response = Map.of("premise", joke.get(0), "punchline", joke.get(1));
+        Map<String, String> response = Map.of(
+                "type", "joke",
+                "premise", joke.get(0),
+                "punchline", joke.get(1)
+        );
         return ResponseEntity.ok(response);
     }
 }

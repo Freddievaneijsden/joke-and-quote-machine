@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Map;
+
 @Controller
 public class QuoteController {
 
@@ -15,9 +17,13 @@ public class QuoteController {
         this.quoteService = quoteService;
     }
 
-    @GetMapping("/quotes")
-    public ResponseEntity<String> getQuote() {
+    @GetMapping("/random")
+    public ResponseEntity<Map<String, String>> getQuote() {
         String quote = quoteService.getRandomQuote();
-        return ResponseEntity.ok(quote);
+        Map<String, String> response = Map.of(
+                "type", "quote",
+                "text", quote
+        );
+        return ResponseEntity.ok(response);
     }
 }

@@ -9,9 +9,15 @@ spring:
         - id: jokes
           uri: http://localhost:8082/
           predicates:
-            - Path=/api/**
+            - Path=/api/jokes/**
           filters:
-            - RewritePath=/api/?(?<segment>.*), /$\{segment}
+            - RewritePath=/api/jokes/?(?<segment>.*), /$\{segment}
+        - id: quotes
+          uri: http://localhost:8083/
+          predicates:
+            - Path=/api/quotes/**
+          filters:
+            - RewritePath=/api/quotes/?(?<segment>.*), /$\{segment}
         - id: resource
           uri: http://resourceserver:8080/
           predicates:
