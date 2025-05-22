@@ -13,7 +13,7 @@ public class JokeService implements JokeGenerator{
 
     @Override
     public List<String> getRandomJoke() {
-        int randomNumber = random.nextInt(0, 10);
+        int randomNumber = random.nextInt(0, 9);
 
         return jokeRepository.getIndexedJokes().get(randomNumber);
     }

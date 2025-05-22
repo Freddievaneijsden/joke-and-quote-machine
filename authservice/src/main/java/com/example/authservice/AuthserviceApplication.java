@@ -129,7 +129,7 @@ public class AuthserviceApplication {
         return http.build();
     }
 
-    //Registering the clients with the AuthorizationService so it knows which applications are allowed to request tokens.
+    //Registering the clients so authservice knows which applications are allowed to request tokens.
     @Bean
     public RegisteredClientRepository registeredClientRepository(PasswordEncoder encoder) {
         RegisteredClient spaClient = RegisteredClient.withId(UUID.randomUUID().toString())

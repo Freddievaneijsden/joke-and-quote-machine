@@ -12,7 +12,7 @@ public class QuoteService implements QuoteGenerator{
 
     @Override
     public String getRandomQuote() {
-        int randomNumber = random.nextInt(0, 10);
+        int randomNumber = random.nextInt(0, 9);
 
         return quoteRepository.getQuotes().get(randomNumber);
     }

@@ -3,10 +3,15 @@ services:
     image: gateway:0.0.1-SNAPSHOT
     ports:
       - "8080:8081"
-  resourceServer:
-    image: resourceserver:0.0.1-SNAPSHOT
   auth:
     image: authservice:0.0.1-SNAPSHOT
     ports:
       - "9000:9000"
-#Does not build images
+  spa:
+    image: spa:0.0.1-SNAPSHOT
+    ports:
+      - "8888:80"
+  jokeservice:
+    image: jokeservice:0.0.1-SNAPSHOT
+  quoteservice:
+    image: quoteservice:0.0.1-SNAPSHOT
