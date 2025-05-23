@@ -7,13 +7,13 @@ spring:
       mvc:
         routes:
         - id: jokes
-          uri: http://localhost:8082/
+          uri: http://jokeservice:8082/
           predicates:
             - Path=/api/jokes/**
           filters:
             - RewritePath=/api/jokes/?(?<segment>.*), /$\{segment}
         - id: quotes
-          uri: http://localhost:8083/
+          uri: http://quoteservice:8083/
           predicates:
             - Path=/api/quotes/**
           filters:

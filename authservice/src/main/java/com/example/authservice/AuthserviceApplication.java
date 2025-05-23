@@ -200,7 +200,7 @@ public class AuthserviceApplication {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:9000")
+                .issuer("http://auth:9000")
                 .build();
     }
 }
