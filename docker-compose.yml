@@ -10,7 +10,7 @@ services:
   spa:
     image: spa:0.0.1-SNAPSHOT
     ports:
-      - "8888:80"
+      - "8888:8888"
   jokeservice:
     image: jokeservice:0.0.1-SNAPSHOT
   quoteservice:
